@@ -953,7 +953,7 @@ const convertToAcselModel = function (productData, productName) {
           BiciTipoDeInspeccion: product['BiciTipoDeInspeccion'],
           BiciVideoURL: product['BiciVideoURL'],
           BicicletaAnio: product['BicicletaAnio'],
-          BicicletaMarca: product['BicicletaMarca'],
+          BicicletaMarca: product['BicicletaMarca'] || product['BicicletaMarcaModelo'],
           BicicletaModelo: product['BicicletaModelo'],
           BicicletaTipo: product['BicicletaTipo'],
           BicicletaTipoUso: product['BicicletaTipoUso'],
@@ -1062,7 +1062,7 @@ const convertToAcselModel = function (productData, productName) {
           BiciTipoDeInspeccion: product['BiciTipoDeInspeccion'],
           BiciVideoURL: product['BiciVideoURL'],
           BicicletaAnio: product['BicicletaAnio'],
-          BicicletaMarca: product['BicicletaMarca'],
+          BicicletaMarca: product['BicicletaMarca'] || product['BicicletaMarcaModelo'],
           BicicletaModelo: product['BicicletaModelo'],
           BicicletaTipo: product['BicicletaTipo'],
           BicicletaTipoUso: product['BicicletaTipoUso'],
@@ -2079,7 +2079,7 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 
 
 //Para Tu Bici
-getDataFromInstadna('ParaTuBici', [getTableData(abrTable2), getTableData(abrTable3), getTableData(abrTable4), getTableData(abrTable5), getTableData(abrTable6), getTableData(abrTable7)]);
+// getDataFromInstadna('ParaTuBici', [getTableData(abrTable2), getTableData(abrTable3), getTableData(abrTable4), getTableData(abrTable5), getTableData(abrTable6), getTableData(abrTable7)]);
 
 //Para Tu Bici Reaseguro
 getDataFromInstadna('ParaTuBiciReaseguro', [getTableData(abrrTable2), getTableData(abrrTable3), getTableData(abrrTable4), getTableData(abrrTable5), getTableData(abrrTable6), getTableData(abrrTable7)]);
