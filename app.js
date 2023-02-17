@@ -299,7 +299,7 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? replaceAll(product['ClienteCedula'], '-', '') : '' : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' || product['ClientePasaporte'] ? product['ClienteCedula'] || product['ClienteCedulaEstado'] || product['ClienteCedulaLlamarAPI'] : product['ClienteCedula'],
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
           ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
@@ -2087,7 +2087,7 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 
 
 //Por Si Pierdes Tus Ingresos
-//getDataFromInstadna('PorSiPierdesTusIngresos', [getTableData(finTable2), getTableData(finTable3), getTableData(finTable4), getTableData(finTable5)]);
+getDataFromInstadna('PorSiPierdesTusIngresos', [getTableData(finTable2), getTableData(finTable3), getTableData(finTable4), getTableData(finTable5)]);
 
 //Emergencias Del Hogar
 //getDataFromInstadna('EmergenciasDelHogar', [getTableData(fehTable2), getTableData(fehTable3), getTableData(fehTable4), getTableData(fehTable5), getTableData(fehTable6)]);
