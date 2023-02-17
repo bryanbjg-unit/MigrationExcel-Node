@@ -110,12 +110,13 @@ let getPolicyByQuote = function (QuoteRef) {
 
 }
 
+//Policies
 let policies = [
 
 
 ]
 
-
+//Mapping of all products
 const convertToAcselModel = function (productData, productName) {
   switch (productName) {
     case 'A-PA':
@@ -1893,7 +1894,7 @@ const convertToAcselModel = function (productData, productName) {
 }
 
 
-//Tables Directions
+//Tables Directions DB
 
 //Auto Comprensivo
 // let bacTable1 = '[dbint_251].[dbint_251_1642_MigracionAutoComprensivoParte1]';
@@ -1986,8 +1987,6 @@ let abrrTable5 = 'dbint_251_1685_MigracionBicicletaReaseguroPolizasParte5';
 let abrrTable6 = 'dbint_251_1686_MigracionBicicletaReaseguroPolizasParte6';
 let abrrTable7 = 'dbint_251_1687_MigracionBicicletaReaseguroPolizasParte7';
 
-
-
 //Por Si Te Accidentas
 let fapTable2 = 'dbint_251_1578_MigracionPorSiTeAccidentasParte2';
 let fapTable3 = 'dbint_251_1746_MigracionPorSiTeAccidentasParte3';
@@ -1997,7 +1996,6 @@ let fapTable6 = 'dbint_251_1749_MigracionPorSiTeAccidentasParte6';
 
 //Por Si Te Accidentas Beneficarios
 let fapbTable = 'dbint_251_1750_MigracionPorSiTeAccidentasBeneficiarios';
-
 
 //Para Su Bienestar Desnivelado
 let fbdTable2 = 'dbint_251_1656_MigracionParasuBienestarDesniveladoParte2';
@@ -2051,15 +2049,17 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 
 
 
-//Init Functions
+//Init Functions Consulting the views in MS-SERVER
+
+
 //Auto Comprensivo
 // getDataFromInstadna('AutoComprensivo', [getTableData(bacTable2), getTableData(bacTable3), getTableData(bacTable4), getTableData(bacTable5), getTableData(bacTable6), getTableData(bacTable7), getTableData(bacTable8), getTableData(bacTable9)]);
 
 //Para Tu Auto
-// getDataFromInstadna('ParaTuAuto', [getTableData(apaTable2), getTableData(apaTable3), getTableData(apaTable4), getTableData(apaTable5), getTableData(apaTable6), getTableData(apaTable7), getTableData(apaTable8), getTableData(apaTable9)]);
+//getDataFromInstadna('ParaTuAuto', [getTableData(apaTable2), getTableData(apaTable3), getTableData(apaTable4), getTableData(apaTable5), getTableData(apaTable6), getTableData(apaTable7), getTableData(apaTable8), getTableData(apaTable9)]);
 
 //Por Lo Que Conduces
-// getDataFromInstadna('PorLoQueConduces', [getTableData(akmTable2), getTableData(akmTable3), getTableData(akmTable4), getTableData(akmTable5), getTableData(akmTable6), getTableData(akmTable7), getTableData(akmTable8), getTableData(akmTable9), getTableData(akmTable10)]);
+//getDataFromInstadna('PorLoQueConduces', [getTableData(akmTable2), getTableData(akmTable3), getTableData(akmTable4), getTableData(akmTable5), getTableData(akmTable6), getTableData(akmTable7), getTableData(akmTable8), getTableData(akmTable9), getTableData(akmTable10)]);
 
 //Perdida Total
 //getDataFromInstadna('PerdidaTotal', [getTableData(aptTable2), getTableData(aptTable3), getTableData(aptTable4), getTableData(aptTable5), getTableData(aptTable6), getTableData(aptTable7), getTableData(aptTable8), getTableData(aptTable9)]);
