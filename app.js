@@ -173,8 +173,13 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoMaterno: product['ClienteApellidoMaterno'] || product['ClienteApellido2'] || '',
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
+<<<<<<< HEAD
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+=======
+          ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : product['ClienteApellido1']? product['ClienteApellido1'] + ' ' + product['ClienteApellido2'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? replaceAll(product['ClienteCedula'], '-', '') : '' : '',
+>>>>>>> 6529fed6c7555c5a239dc6a20f02cb8d820b8347
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
           ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
@@ -962,7 +967,7 @@ const convertToAcselModel = function (productData, productName) {
           BiciTipoDeInspeccion: product['BiciTipoDeInspeccion'],
           BiciVideoURL: product['BiciVideoURL'],
           BicicletaAnio: product['BicicletaAnio'],
-          BicicletaMarca: product['BicicletaMarca'],
+          BicicletaMarca: product['BicicletaMarca'] || product['BicicletaMarcaModelo'],
           BicicletaModelo: product['BicicletaModelo'],
           BicicletaTipo: product['BicicletaTipo'],
           BicicletaTipoUso: product['BicicletaTipoUso'],
@@ -1072,7 +1077,7 @@ const convertToAcselModel = function (productData, productName) {
           BiciTipoDeInspeccion: product['BiciTipoDeInspeccion'],
           BiciVideoURL: product['BiciVideoURL'],
           BicicletaAnio: product['BicicletaAnio'],
-          BicicletaMarca: product['BicicletaMarca'],
+          BicicletaMarca: product['BicicletaMarca'] || product['BicicletaMarcaModelo'],
           BicicletaModelo: product['BicicletaModelo'],
           BicicletaTipo: product['BicicletaTipo'],
           BicicletaTipoUso: product['BicicletaTipoUso'],
@@ -2094,27 +2099,27 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 
 
 //Para Tu Bici
-//getDataFromInstadna('ParaTuBici', [getTableData(abrTable2), getTableData(abrTable3), getTableData(abrTable4), getTableData(abrTable5), getTableData(abrTable6), getTableData(abrTable7)]);
+// getDataFromInstadna('ParaTuBici', [getTableData(abrTable2), getTableData(abrTable3), getTableData(abrTable4), getTableData(abrTable5), getTableData(abrTable6), getTableData(abrTable7)]);
 
 //Para Tu Bici Reaseguro
-//getDataFromInstadna('ParaTuBiciReaseguro', [getTableData(abrrTable2), getTableData(abrrTable3), getTableData(abrrTable4), getTableData(abrrTable5), getTableData(abrrTable6), getTableData(abrrTable7)]);
+getDataFromInstadna('ParaTuBiciReaseguro', [getTableData(abrrTable2), getTableData(abrrTable3), getTableData(abrrTable4), getTableData(abrrTable5), getTableData(abrrTable6), getTableData(abrrTable7)]);
 
 
 //Por Si Te Accidentas
-//getDataFromInstadna('PorSiTeAccidentas', [getTableData(fapTable2), getTableData(fapTable3), getTableData(fapTable4), getTableData(fapTable5), getTableData(fapTable6)]);
+// getDataFromInstadna('PorSiTeAccidentas', [getTableData(fapTable2), getTableData(fapTable3), getTableData(fapTable4), getTableData(fapTable5), getTableData(fapTable6)]);
 
 //Por Si Te Accidentas Beneficiarios
 //getDataFromInstadna('PorSiTeAccidentasBeneficiarios', [getTableData(fapbTable, true)]);
 
 
 //Para Su Bienestar
-//getDataFromInstadna('ParaSuBienestar', [getTableData(fbdTable2), getTableData(fbdTable3), getTableData(fbdTable4), getTableData(fbdTable5), getTableData(fbdTable6)]);
+// getDataFromInstadna('ParaSuBienestar', [getTableData(fbdTable2), getTableData(fbdTable3), getTableData(fbdTable4), getTableData(fbdTable5), getTableData(fbdTable6)]);
 
 //Para Su Bienestar Desnivelado Beneficiarios
 //getDataFromInstadna('ParaSuBienestarDesniveladoBeneficiarios', [getTableData(fbdbTable, true)]);
 
 //Para Su Bienestar Nivelado
-//getDataFromInstadna('ParaSuBienestarNivelado', [getTableData(fbdnTable2), getTableData(fbdnTable3), getTableData(fbdnTable4), getTableData(fbdnTable5), getTableData(fbdnTable6)]);
+// getDataFromInstadna('ParaSuBienestarNivelado', [getTableData(fbdnTable2), getTableData(fbdnTable3), getTableData(fbdnTable4), getTableData(fbdnTable5), getTableData(fbdnTable6)]);
 
 //Para Su Bienestar Nivelado Beneficiarios
 // getDataFromInstadna('ParaSuBienestarNiveladoBeneficiarios', [getTableData(fbdnbTable, true)]);
