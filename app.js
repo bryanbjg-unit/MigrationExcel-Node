@@ -59,7 +59,7 @@ const getTableData = async function (tableName, noQuery) {
       var request = new sql.Request();
       // query to the database and get the records
       console.log('Buscando polizas: ', tableName)
-      let query = noQuery ? `select * from ${tableName}` : `select * from(select *, row_number() over(partition by PolicyNumber order by PolicyNumber, EffectiveChangeDate desc, IsCancelled desc) as row_number from ${tableName}  where SiteEnvironment = 'Live' and PolicyNumber is not null) as row where row_number = 1 order by PolicyNumber`
+      let query = noQuery ? `select * from ${tableName}` : `select * from(select *, row_number() over(partition by PolicyNumber order by PolicyNumber, IsCancelled desc, EffectiveChangeDate desc) as row_number from ${tableName}  where SiteEnvironment = 'Live' and PolicyNumber is not null) as row where row_number = 1 order by PolicyNumber`
       request.query(query, function (err, data) {
         if (err) {
           console.log('------------ TABLE ERROR ---------------')
@@ -153,7 +153,7 @@ const convertToAcselModel = function (productData, productName) {
           AutoCombustible: product['AutoCombustible'] == 'Gasolina / Diesel' ? '01' : product['AutoCombustible'] == 'Gas' ? '02' : '03',
           AutoComportamiento: product['AutoComportamiento'] == 'BUENO' ? '01' : '02',
           AutoDocumentoInspeccion: product['DocumentoInspeccion'] || '',
-          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? '01' : '02' : '',
+          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? 'Si' : 'No' : '',
           AutoMarca: product['AutoMarca'] || '',
           AutoMatriculaChasis: product['MatriculaChasis'] || '',
           AutoMatriculaCilindros: product['MatriculaChasis'] || '',
@@ -174,9 +174,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -278,7 +278,7 @@ const convertToAcselModel = function (productData, productName) {
           AutoCombustible: product['AutoCombustible'] == 'Gasolina / Diesel' ? '01' : product['AutoCombustible'] == 'Gas' ? '02' : '03',
           AutoComportamiento: product['AutoComportamiento'] == 'BUENO' ? '01' : '02',
           AutoDocumentoInspeccion: product['DocumentoInspeccion'] || '',
-          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? '01' : '02' : '',
+          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? 'Si' : 'No' : '',
           AutoMarca: product['AutoMarca'] || '',
           AutoMatriculaChasis: product['MatriculaChasis'] || '',
           AutoMatriculaCilindros: product['MatriculaChasis'] || '',
@@ -299,9 +299,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -405,7 +405,7 @@ const convertToAcselModel = function (productData, productName) {
           AutoCombustible: product['AutoCombustible'] == 'Gasolina / Diesel' ? '01' : product['AutoCombustible'] == 'Gas' ? '02' : '03',
           AutoComportamiento: product['AutoComportamiento'] == 'BUENO' ? '01' : '02',
           AutoDocumentoInspeccion: product['DocumentoInspeccion'] || '',
-          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? '01' : '02' : '',
+          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? 'Si' : 'No' : '',
           AutoMarca: product['AutoMarca'] || '',
           AutoMatriculaChasis: product['MatriculaChasis'] || '',
           AutoMatriculaCilindros: product['MatriculaChasis'] || '',
@@ -426,9 +426,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -531,7 +531,7 @@ const convertToAcselModel = function (productData, productName) {
           AutoCombustible: product['AutoCombustible'] == 'Gasolina / Diesel' ? '01' : product['AutoCombustible'] == 'Gas' ? '02' : '03',
           AutoComportamiento: product['AutoComportamiento'] == 'BUENO' ? '01' : '02',
           AutoDocumentoInspeccion: product['DocumentoInspeccion'] || '',
-          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? '01' : '02' : '',
+          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? 'Si' : 'No' : '',
           AutoMarca: product['AutoMarca'] || '',
           AutoMatriculaChasis: product['MatriculaChasis'] || '',
           AutoMatriculaCilindros: product['MatriculaChasis'] || '',
@@ -552,9 +552,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -607,7 +607,7 @@ const convertToAcselModel = function (productData, productName) {
           PepValidacion: product['PepValidacion'] == 'Yes' ? 'Si' : product['PepValidacion'] == 'Si' ? 'Si' : 'No',
           PlanSeguroLey: product['ResponsabilidadCivil'] == 'Plan A' ? 'A' : product['ResponsabilidadCivil'] == 'Plan B' ? 'B' : product['ResponsabilidadCivil'] == 'Plan C' ? 'C' : 'No',
           SitePortal: product['SitePortal'] || '',
-          SumaAsegurada: product['SumaAsegurada'] || '',
+          SumaAsegurada: product['SumaAsegurada'] || product['IngresoPromedioMensual'] || '',
           TipoVehiculo: product['AutoTipo'] == 'AUTO' ? '01' : product['AutoTipo'] == 'CAMIONETA' ? '02' : product['AutoTipo'] == 'SUV' ? '03' : product['AutoTipo'] == 'VAN' ? '04' : '',
           VendedorID: product['VendedorID'] || '',
           pago_AutorizacionID: product['pago_AutorizacionID'] || '',
@@ -660,7 +660,7 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteCedula: product['ClienteCedula'] || product['ClienteCedulaLlamarAPI'] || '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -762,7 +762,7 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteCedula: product['ClienteCedula'] || product['ClienteCedulaLlamarAPI'] || '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -864,9 +864,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -973,9 +973,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -1083,9 +1083,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -1190,9 +1190,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -1267,7 +1267,7 @@ const convertToAcselModel = function (productData, productName) {
           BeneficiarioNumeroIdentificacion: product['BeneficiarioNumeroIdentificacion'] ? product['BeneficiarioNumeroIdentificacionDefault'] : product['BeneficiarioNumeroIdentificacion'],
           BeneficiarioPorcentaje: product['BeneficiarioPorcentaje'] ? product['BeneficiarioPorcentaje'] : product['BeneficiarioPorcentajeDefault'],
           BeneficiarioRelacion: product['BeneficiarioRelacion'] ? product['BeneficiarioRelacionDefault'] : product['BeneficiarioRelacion'],
-          BeneficiarioFechaDeNacimiento: product['BeneficiarioFechaDeNacimiento'] ? moment(product['BeneficiarioFechaDeNacimiento']).format('DD/MM/yyyy') : product['BeneficiarioFechaDeNacimientoDefault'] ?  moment(product['BeneficiarioFechaDeNacimientoDefault']).format('DD/MM/yyyy') : '',
+          BeneficiarioFechaDeNacimiento: product['BeneficiarioFechaDeNacimiento'] ? moment(product['BeneficiarioFechaDeNacimiento']).format('DD/MM/yyyy') : product['BeneficiarioFechaDeNacimientoDefault'] ? moment(product['BeneficiarioFechaDeNacimientoDefault']).format('DD/MM/yyyy') : '',
           numBen: product['numBen'],
         }
       })
@@ -1315,9 +1315,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -1394,7 +1394,7 @@ const convertToAcselModel = function (productData, productName) {
           BeneficiarioNumeroIdentificacion: product['BeneficiarioNumeroIdentificacion'] ? product['BeneficiarioNumeroIdentificacionDefault'] : product['BeneficiarioNumeroIdentificacion'],
           BeneficiarioPorcentaje: product['BeneficiarioPorcentaje'] ? product['BeneficiarioPorcentaje'] : product['BeneficiarioPorcentajeDefault'],
           BeneficiarioRelacion: product['BeneficiarioRelacion'] ? product['BeneficiarioRelacionDefault'] : product['BeneficiarioRelacion'],
-          BeneficiarioFechaDeNacimiento: product['BeneficiarioFechaDeNacimiento'] ? moment(product['BeneficiarioFechaDeNacimiento']).format('DD/MM/yyyy') : product['BeneficiarioFechaDeNacimientoDefault'] ?  moment(product['BeneficiarioFechaDeNacimientoDefault']).format('DD/MM/yyyy') : '',
+          BeneficiarioFechaDeNacimiento: product['BeneficiarioFechaDeNacimiento'] ? moment(product['BeneficiarioFechaDeNacimiento']).format('DD/MM/yyyy') : product['BeneficiarioFechaDeNacimientoDefault'] ? moment(product['BeneficiarioFechaDeNacimientoDefault']).format('DD/MM/yyyy') : '',
           numBen: product['numBen'],
         }
       })
@@ -1444,7 +1444,7 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteCedula: product['DocumentoTipo'] == 'Cédula' || null ? product['ClienteCedula'] || product['ClienteCedulaLlamarAPI'] || product['ClienteCedulaEstado'] || product['CedulaClienteSiniestro'] || product['CedulaTutorSiniestroDefault'] : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
-          ClienteConfirmacionNacimiento: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
           ClienteDomicilioCiudad: '',
@@ -1521,7 +1521,7 @@ const convertToAcselModel = function (productData, productName) {
           BeneficiarioNumeroIdentificacion: product['BeneficiarioNumeroIdentificacion'] ? product['BeneficiarioNumeroIdentificacionDefault'] : product['BeneficiarioNumeroIdentificacion'],
           BeneficiarioPorcentaje: product['BeneficiarioPorcentaje'] ? product['BeneficiarioPorcentaje'] : product['BeneficiarioPorcentajeDefault'],
           BeneficiarioRelacion: product['BeneficiarioRelacion'] ? product['BeneficiarioRelacionDefault'] : product['BeneficiarioRelacion'],
-          BeneficiarioFechaDeNacimiento: product['BeneficiarioFechaDeNacimiento'] ? moment(product['BeneficiarioFechaDeNacimiento']).format('DD/MM/yyyy') : product['BeneficiarioFechaDeNacimientoDefault'] ?  moment(product['BeneficiarioFechaDeNacimientoDefault']).format('DD/MM/yyyy') : '',
+          BeneficiarioFechaDeNacimiento: product['BeneficiarioFechaDeNacimiento'] ? moment(product['BeneficiarioFechaDeNacimiento']).format('DD/MM/yyyy') : product['BeneficiarioFechaDeNacimientoDefault'] ? moment(product['BeneficiarioFechaDeNacimientoDefault']).format('DD/MM/yyyy') : '',
           numBen: product['numBen'],
         }
       })
@@ -1568,8 +1568,7 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidos: product['ClienteApellido1TMPX'] ? product['ClienteApellido1TMPX'] + ' ' + product['ClienteApellido1TMPX'] : product['ClienteApellido1TMP'] ? product['ClienteApellido1TMP'] + ' ' + product['ClienteApellido1TMP'] : product['ClienteApellido1Pasaporte'] ? product['ClienteApellido1Pasaporte'] + ' ' + product['ClienteApellido2Pasaporte'] : '',
           ClienteCedula: product['DocumentoTipo'] || product['DocumentoTipoTMP'] == 'Cédula' ? product['ClienteCedulaTMP'] || product['ClienteCedula'] : '',
           ClienteComprobanteFiscal: '',
-          ClienteConfirmacionNacimiento: moment(product['ClienteNacimientoTMP']).format('DD/MM/yyyy'),
-          ClienteCorreo: product['ClienteCorreoTMP'],
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteDiabetes: product['ClienteDiabetes'] == 'Yes' ? 'Si' : product['ClienteDiabetes'] == 'Si' ? 'Si' : 'No',
           ClienteDomicilioCalle: '',
           ClienteDomicilioCiudad: '',
@@ -1711,10 +1710,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellido1'],
           ClienteApellidoTarjetaCredito: product['ClienteApellido1'] ? product['ClienteApellido1'] : product['ClienteApellido1Pasaporte'] + ' ' + product['ClienteApellido2Pasaporte'],
           ClienteApellidos: product['ClienteApellido1'] ? product['ClienteApellido1'] : product['ClienteApellido1Pasaporte'] + ' ' + product['ClienteApellido2Pasaporte'],
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'],
-          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']).format('DD/MM/yyyy'),
-          ClienteCorreo: product['ClienteCorreoQQ'],
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'],
           ClienteDomicilioCiudad: product['ClienteDomicilioCiudad'],
           ClienteDomicilioEdificio: product['ClienteDomicilioEdificio'],
@@ -1843,9 +1841,9 @@ const convertToAcselModel = function (productData, productName) {
           ClienteApellidoPaterno: product['ClienteApellido1'],
           ClienteApellidoTarjetaCredito: product['ClienteApellido1'] ? product['ClienteApellido1'] : product['ClienteApellido1Pasaporte'] + ' ' + product['ClienteApellido2Pasaporte'],
           ClienteApellidos: product['ClienteApellido1'] ? product['ClienteApellido1'] : product['ClienteApellido1Pasaporte'] + ' ' + product['ClienteApellido2Pasaporte'],
-          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
           ClienteComprobanteFiscal: product['ClienteRNCRequerido'],
-          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']).format('DD/MM/yyyy'),
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
           ClienteCorreo: product['ClienteCorreoQQ'],
           ClienteDomicilioCalle: product['ClienteDomicilioCalle'],
           ClienteDomicilioCiudad: product['ClienteDomicilioCiudad'],
@@ -2124,7 +2122,7 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 // getDataFromInstadna('ParaSuBienestarNiveladoBeneficiarios', [getTableData(fbdnbTable, true)]);
 
 //Vida Crédito
-getDataFromInstadna('VidaCredito', [getTableData(bvcTable1), getTableData(bvcTable2), getTableData(bvcTable3), getTableData(bvcTable4), getTableData(bvcTable5), getTableData(bvcTable6), getTableData(bvcTable7), getTableData(bvcTable8), getTableData(bvcTable9)]);
+// getDataFromInstadna('VidaCredito', [getTableData(bvcTable1), getTableData(bvcTable2), getTableData(bvcTable3), getTableData(bvcTable4), getTableData(bvcTable5), getTableData(bvcTable6), getTableData(bvcTable7), getTableData(bvcTable8), getTableData(bvcTable9)]);
 
 //Para Tus Equipos
 // getDataFromInstadna('EquiposElectronicos', [ getTableData(aeeTable2), getTableData(aeeTable3), getTableData(aeeTable4), getTableData(aeeTable5), getTableData(aeeTable6), getTableData(aeeTable7), getTableData(aeeTable8)]);
@@ -2133,7 +2131,7 @@ getDataFromInstadna('VidaCredito', [getTableData(bvcTable1), getTableData(bvcTab
 // getDataFromInstadna('EquiposElectronicosListado', [getTableData(aeeTableEquipos, true)]);
 
 //Para Mejor Amigo
-// getDataFromInstadna('ParaTuMejorAmigo', [getTableData(fmaTable2), getTableData(fmaTable3), getTableData(fmaTable4), getTableData(fmaTable5), getTableData(fmaTable6), getTableData(fmaTable7)]);
+getDataFromInstadna('ParaTuMejorAmigo', [getTableData(fmaTable2), getTableData(fmaTable3), getTableData(fmaTable4), getTableData(fmaTable5), getTableData(fmaTable6), getTableData(fmaTable7)]);
 
 
 let generateExcel = function (data, productName) {
