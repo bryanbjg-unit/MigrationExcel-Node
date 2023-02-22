@@ -243,6 +243,130 @@ const convertToAcselModel = function (productData, productName) {
         }
       })
       break;
+    case 'B-AC':
+    case 'AutoComprensivo':
+      console.log(productData[0])
+      return _.map(productData, product => {
+        let vehicleAge = new Date().getFullYear() - product['AnioFabricacionDefault'] > 0 ? new Date().getFullYear() - product['AnioFabricacionDefault'] : 0;
+        vehicleAge = vehicleAge >= 0 ? vehicleAge : 0;
+        return {
+          codprod: 'A-PA',
+          codPlan: '001',
+          revPlan: '001',
+          codRamo: 'AUTO',
+          codMoneda: 'RD',
+          codUsr: 'externo112',
+          tipoPrima: 'LLAMATIVA',
+          tipoPropuesta: 'MIGRACION',
+          fecIniVigPropuesta: moment(product['PolizaInicio']).format('DD/MM/yyyy'),
+          fecFinVigPropuesta: moment(product['PolizaFin']).format('DD/MM/yyyy'),
+          descripcionBienAsegurado: product['PolicyNumber'],
+          PrimaBruta: product['PrimaBrutaSeleccionada'],
+          AgenteCorreo: product['AgenteCorreoContacto'] || '',
+          AgenteDomicilioCalle: product['AgenteDomicilioCalle'] || '',
+          AgenteDomicilioEdificio: product['AgenteDomicilioEdificio'] || '',
+          AgenteDomicilioMunicipio: product['AgenteDomicilioMunicipio'] || '',
+          AgenteDomicilioProvincia: product['AgenteDomicilioProvincia'] || '',
+          AgenteDomicilioSector: product['AgenteDomicilioSector'] || '',
+          AgenteIdentificacion: product['AgenteIdentificacion'] || '',
+          AgenteNombre1: product['AgenteNombre1'] || '',
+          AgenteNombre2: product['AgenteNombre2'] || '',
+          AgenteRNCRequerido: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : product['ClienteRNCRequerido'] == 'Si' ? 'Si' : product['AgenteRNCRequerido'] == 'AgenteRNCRequerido' ? 'Si' : 'No',
+          AgenteTelefono: product['AgenteTelefono'] || '',
+          AutoCeroKM: product['CeroKM'] == 'Yes' ? 'Si' : 'No',
+          AutoCombustible: product['AutoCombustible'] == 'Gasolina / Diesel' ? '01' : product['AutoCombustible'] == 'Gas' ? '02' : '03',
+          AutoComportamiento: product['AutoComportamiento'] == 'BUENO' ? '01' : '02',
+          AutoDocumentoInspeccion: product['DocumentoInspeccion'] || '',
+          AutoExigenciasAdaptacion: product['ExigenciasAdaptacion'] ? product['ExigenciasAdaptacion'] == 'Yes' ? 'Si' : 'No' : '',
+          AutoMarca: product['AutoMarca'] || '',
+          AutoMatriculaChasis: product['MatriculaChasis'] || '',
+          AutoMatriculaCilindros: product['MatriculaChasis'] || '',
+          AutoMatriculaColor: product['MatriculaColor'] || '',
+          AutoMatriculaHPCC: product['MatriculaHPCC'] || '',
+          AutoMatriculaMotor: product['MatriculaMotor'] || '',
+          AutoModelo: product['AutoModelo'] || '',
+          AutoTipoDeInspeccion: product['TipoDeInspeccion'] || '',
+          AutoTipoGas: product['AutoCombustible'] == 'Gas' ? product['TipoGas'] : '',
+          AutoTipoInstalacion: product['AutoCombustible'] == 'Gas' ? product['TipoInstalacion'] == 'Yes' ? 'Adaptado' : 'De Fábrica' : '',
+          AutoTipoUso: '01',
+          AutoValor: product['AutoValor'] || product['AutoValorReal'] || '',
+          AzureId: '',
+          AnoVehiculo: product['AnioFabricacionDefault'] || '',
+          CertificadoVigenciaDesde: moment(product['PolizaInicio']).format('DD/MM/yyyy'),
+          CertificadoVigenciaHasta: moment(product['PolizaFin']).format('DD/MM/yyyy'),
+          ClienteApellidoMaterno: product['ClienteApellidoMaterno'] || product['ClienteApellido2'] || '',
+          ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
+          ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
+          ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
+          ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
+          ClienteComprobanteFiscal: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
+          ClienteConfirmacionNacimiento: moment(product['ClienteNacimiento2']) ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : moment(product['ClienteNacimiento']) ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoALT']) ? moment(product['ClienteNacimientoALT']).format('DD/MM/yyyy') : moment(product['ClienteNacimientoPasaporte']) ? moment(product['ClienteNacimientoPasaporte']).format('DD/MM/yyyy') : '',
+          ClienteCorreo: product['ClienteCorreo'] || product['ClienteCorreoFinal'] || '',
+          ClienteDomicilioCalle: product['ClienteDomicilioCalle'] || '',
+          ClienteDomicilioCiudad: '',
+          ClienteDomicilioEdificio: product['ClienteDomicilioEdificio'] || '',
+          ClienteDomicilioMunicipio: product['ClienteDomicilioMunicipio'] || '',
+          ClienteDomicilioProvincia: product['ClienteDomicilioProvincia'] || '',
+          ClienteDomicilioSector: product['ClienteDomicilioSector'] || '',
+          ClienteGenero: product['ClienteGeneroPasaporte'] == 'Masculino' ? 'Hombre' : product['ClienteGeneroPasaporte'] == 'Hombre' ? 'Hombre' : product['ClienteGeneroPasaporte'] == 'Femenino' ? 'Mujer' : product['ClienteGeneroPasaporte'] == 'Mujer' ? 'Mujer' : product['ClienteGeneroJCE'] == 'Masculino' ? 'Hombre' : product['ClienteGeneroJCE'] == 'Hombre' ? 'Hombre' : product['ClienteGeneroJCE'] == 'Femenino' ? 'Mujer' : product['ClienteGeneroJCE'] == 'Mujer' ? 'Mujer' : product['ClienteGeneroTMP'] == 'Masculino' ? 'Hombre' : product['ClienteGeneroTMP'] == 'Hombre' ? 'Hombre' : product['ClienteGeneroTMP'] == 'Femenino' ? 'Mujer' : product['ClienteGeneroTMP'] == 'Mujer' ? 'Mujer' : product['ClienteGenero'] == 'Masculino' ? 'Hombre' : product['ClienteGenero'] == 'Hombre' ? 'Hombre' : product['ClienteGenero'] == 'Femenino' ? 'Mujer' : product['ClienteGenero'] == 'Mujer' ? 'Mujer' : 'Otros',
+          ClienteNombreTarjetaCredito: product['ClienteNombreTarjetaCredito'] || '',
+          ClienteNombres: product['ClienteNombres'] || product['ClienteNombreTarjetaCredito'] || '',
+          ClientePasaporte: product['DocumentoTipo'] == 'Pasaporte' ? product['ClientePasaporte'] : '',
+          ClientePerfil: product['ClientePerfil'] || '',
+          ClienteRNCRequerido: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
+          ClienteReferido: product['ClienteReferido'] == 'Yes' ? 'Si' : 'No',
+          ClienteReferidoDesc: product['PromotionalCode'] ? refRegExp.test(product['PromotionalCode']) ? '02' : '01' : '',
+          ClienteTelefono: product['ClienteTelefonoFinal'] || '',
+          CodigoPromocional: product['PromotionalCodeDefault'] || '',
+          CompaniaCorretaje: product['CompaniaCorretaje'] || '',
+          Discount: product['Discount'] || '',
+          DiscountType: product['DiscountType'] || '',
+          DocumentoTipo: product['DocumentoTipo'] || '',
+          EdadVehiculo: vehicleAge,
+          EndosoCesion: product['EndosoCesion'] ? product['EndosoCesion'] == 'Yes' ? 'Si' : 'No' : '',
+          EstadoCivilAsegurado: 'S',
+          FechaInicioInspeccion: product['FechaInicioInspeccion'] ? moment(product['FechaInicioInspeccion']).format('DD/MM/yyyy') : '',
+          FechaNacimiento2: product['ClienteNacimiento'] ? moment(product['ClienteNacimiento']).format('DD/MM/yyyy') : product['ClienteNacimiento2'] ? moment(product['ClienteNacimiento2']).format('DD/MM/yyyy') : '',
+          FindeVigencia: moment(product['PolizaFin']).format('DD/MM/yyyy'),
+          FraccionamientoPago: product['PagosFrecuenciaDefault'] == 'Mensual' ? 'M' : product['PagosFrecuenciaDefault'] == 'Anual' ? 'A' : 'PU',
+          IF_EmailEjecutivo: product['IF_EmailEjecutivo'] || '',
+          IF_NombreEjecutivo: product['IF_NombreEjecutivo'] || '',
+          IF_NumeroEjecutivo: product['IF_NumeroEjecutivo'] || '',
+          IF_RNC: product['IF_RNC'] || '',
+          IF_SucursalFinanciera: product['IF_SucursalFinanciera'] || '',
+          IncluyeAsistenciaVehicular: product['AsistenciaVehicular'] == 'Yes' ? 'SI' : 'NO',
+          IncluyeRentaCar: product['AutoSustitutoDefault'] == 'Rent-A-Car' ? 'SI' : 'No',
+          IncluyeUber: product['AutoSustitutoDefault'] == 'UBER' ? 'SI' : 'No',
+          IndicadorDescuentoMarcaModelo: product['AutoModeloDescuentoDefault'] ? 1 : '0',
+          Iniciodevigencia: moment(product['PolizaInicio']).format('DD/MM/yyyy'),
+          InspeccionCompletada: product['InspeccionCompletada'] || '',
+          InstitucionFinanciera: product['InstitucionFinanciera'] || '',
+          MatriculaPlaca: product['MatriculaPlaca'] || '',
+          NombreInstitucion: product['InstitucionFinanciera'] || '',
+          Pago_Estatus: product['Pago_Estatus'] || '',
+          Pep: product['Pep'] == 'Yes' ? 'Si' : product['Pep'] == 'Si' ? 'Si' : 'No',
+          PepClienteCargo: product['PepClienteCargo'] || '',
+          PepClienteCargoFinal: product['Pep'] == 'Yes' ? product['PepClienteCargoFinal'] : '',
+          PepOtroCargo: product['PepOtroCargo'] || '',
+          PepOtroNombre: product['PepOtroNombre'] || '',
+          PepOtroRelacion: product['PepOtroRelacion'] || '',
+          PepValidacion: product['PepValidacion'] == 'Yes' ? 'Si' : product['PepValidacion'] == 'Si' ? 'Si' : 'No',
+          PlanSeguroLey: product['ResponsabilidadCivil'] == 'Plan A' ? 'A' : product['ResponsabilidadCivil'] == 'Plan B' ? 'B' : product['ResponsabilidadCivil'] == 'Plan C' ? 'C' : 'No',
+          SitePortal: product['SitePortal'] || '',
+          SumaAsegurada: product['SumaAsegurada'] || '',
+          TipoVehiculo: product['AutoTipo'] == 'AUTO' ? '01' : product['AutoTipo'] == 'CAMIONETA' ? '02' : product['AutoTipo'] == 'SUV' ? '03' : product['AutoTipo'] == 'VAN' ? '04' : '',
+          VendedorID: product['VendedorID'] || '',
+          pago_AutorizacionID: product['pago_AutorizacionID'] || '',
+          pago_FormaPagoID: product['pago_FormaPagoID'] || '',
+          pago_IPPID: product['pago_IPPID'] || '',
+          pago_ReservaID: product['pago_ReservaID'] || '',
+          pago_ResultadoID: product['pago_ResultadoID'] || '',
+          pago_ResultadoMensaje: product['pago_ResultadoMensaje'] || '',
+          Estado: product['IsCancelled'] ? 'Cancelada' : 'Activa',
+          FechaPrimeraEmision: moment(product['PolicyOriginalSaleDate']).format('DD/MM/yyyy'),
+        }
+      })
+      break;
 
     case 'A-KM':
     case 'PorLoQueConduces':
@@ -295,8 +419,8 @@ const convertToAcselModel = function (productData, productName) {
           AnoVehiculo: product['AnioFabricacionDefault'] || '',
           CertificadoVigenciaDesde: moment(product['PolizaInicio']).format('DD/MM/yyyy'),
           CertificadoVigenciaHasta: moment(product['PolizaFin']).format('DD/MM/yyyy'),
-          ClienteApellidoMaterno: product['ClienteApellidoMaterno'] && product['ClienteApellidoMaterno'] != '---------' ? product['ClienteApellidoMaterno'] : product['ClienteApellido2'] && product['ClienteApellido2'] != '---------' ? product['ClienteApellido2'] : '',
-          ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || '',
+          ClienteApellidoMaterno: product['ClienteApellidoMaterno'] && product['ClienteApellidoMaterno'] != '---------' ? product['ClienteApellidoMaterno'] : product['ClienteApellido2'] && product['ClienteApellido2'] != '---------' ? product['ClienteApellido2'] : product['ClienteApellido2TMP'] && product['ClienteApellido2TMP'] != '---------' ? product['ClienteApellido2TMP'] : '',
+          ClienteApellidoPaterno: product['ClienteApellidoPaterno'] || product['ClienteApellido1'] || product['ClienteApellido1TMP'] || '',
           ClienteApellidoTarjetaCredito: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteApellidos: product['ClienteApellidoTarjetaCredito'] ? product['ClienteApellidoTarjetaCredito'] : product['ClienteApellidoPaterno'] ? product['ClienteApellidoPaterno'] + ' ' + product['ClienteApellidoMaterno'] : '',
           ClienteCedula: product['DocumentoTipo'] == 'Cédula' ? product['ClienteCedula'] ? product['ClienteCedula'] : product['ClienteCedulaQQ'] ? product['ClienteCedulaQQ'] : product['ClienteCedulaPasaporte'] ? product['ClienteCedulaPasaporte'] : '' : '',
@@ -311,7 +435,7 @@ const convertToAcselModel = function (productData, productName) {
           ClienteDomicilioSector: product['ClienteDomicilioSector'] || '',
           ClienteGenero: product['ClienteGeneroPasaporte'] == 'Masculino' ? 'Hombre' : product['ClienteGeneroPasaporte'] == 'Hombre' ? 'Hombre' : product['ClienteGeneroPasaporte'] == 'Femenino' ? 'Mujer' : product['ClienteGeneroPasaporte'] == 'Mujer' ? 'Mujer' : product['ClienteGeneroJCE'] == 'Masculino' ? 'Hombre' : product['ClienteGeneroJCE'] == 'Hombre' ? 'Hombre' : product['ClienteGeneroJCE'] == 'Femenino' ? 'Mujer' : product['ClienteGeneroJCE'] == 'Mujer' ? 'Mujer' : product['ClienteGeneroTMP'] == 'Masculino' ? 'Hombre' : product['ClienteGeneroTMP'] == 'Hombre' ? 'Hombre' : product['ClienteGeneroTMP'] == 'Femenino' ? 'Mujer' : product['ClienteGeneroTMP'] == 'Mujer' ? 'Mujer' : product['ClienteGenero'] == 'Masculino' ? 'Hombre' : product['ClienteGenero'] == 'Hombre' ? 'Hombre' : product['ClienteGenero'] == 'Femenino' ? 'Mujer' : product['ClienteGenero'] == 'Mujer' ? 'Mujer' : 'Otros',
           ClienteNombreTarjetaCredito: product['ClienteNombreTarjetaCredito'] || '',
-          ClienteNombres: product['ClienteNombres'] || product['ClienteNombreTarjetaCredito'] || '',
+          ClienteNombres:    product['ClienteNombres'] || product['ClienteNombreTarjetaCredito'] || product['ClienteNombre'] || product['ClienteNombre'] || product['ClienteNombreQQ'] || '',
           ClientePasaporte: product['DocumentoTipo'] == 'Pasaporte' ? product['ClientePasaporte'] : '',
           ClientePerfil: product['ClientePerfil'] || '',
           ClienteRNCRequerido: product['ClienteRNCRequerido'] == 'Yes' ? 'Si' : 'No',
@@ -806,6 +930,7 @@ const convertToAcselModel = function (productData, productName) {
           InstitucionFinanciera: product['InstitucionFinanciera'] || '',
           NombreInstitucion: product['InstitucionFinanciera'] || '',
           Oficio: product['ClienteLugarEmpleo'],
+          NombreEmpresa: product['ClienteNombreEmpresa'],
           Pago_Estatus: product['Pago_Estatus'] || '',
           Pep: product['Pep'] == 'Yes' ? 'Si' : product['Pep'] == 'Si' ? 'Si' : 'No',
           PepClienteCargo: product['PepClienteCargo'] || '',
@@ -815,7 +940,7 @@ const convertToAcselModel = function (productData, productName) {
           PepOtroRelacion: product['PepOtroRelacion'] || '',
           PepValidacion: product['PepValidacion'] == 'Yes' ? 'Si' : product['PepValidacion'] == 'Si' ? 'Si' : 'No',
           SitePortal: product['SitePortal'] || '',
-          TipoTrabajador: product['ClienteTipoEmpleo'] ? product['ClienteTipoEmpleo'] == 'Yes' ? 'Si' : 'No' : 'No',
+          TipoTrabajador: product['ClienteTipoEmpleo'] ? product['ClienteTipoEmpleo'] == 'Yes' ? 'F' : 'I' : 'I',
           SumaAsegurada: product['SumaAsegurada'] || '',
           VendedorID: product['VendedorID'] || '',
           pago_AutorizacionID: product['pago_AutorizacionID'] || '',
@@ -844,7 +969,7 @@ const convertToAcselModel = function (productData, productName) {
           tipoPrima: 'LLAMATIVA',
           tipoPropuesta: 'MIGRACION',
           fecIniVigPropuesta: moment(product['PolizaInicio']).format('DD/MM/yyyy'),
-          fecFinVigPropuesta: moment(product['PolizaFin']).format('DD/MM/yyyy'), 
+          fecFinVigPropuesta: moment(product['PolizaFin']).format('DD/MM/yyyy'),
           descripcionBienAsegurado: product['PolicyNumber'],
           PrimaBruta: product['PrimaBrutaSeleccionada'],
           AgenteCorreo: product['AgenteCorreoContacto'] || '',
@@ -2084,7 +2209,7 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 // getDataFromInstadna('ParaTuAuto', [getTableData(apaTable2), getTableData(apaTable3), getTableData(apaTable4), getTableData(apaTable5), getTableData(apaTable6), getTableData(apaTable7), getTableData(apaTable8), getTableData(apaTable9)]);
 
 //Por Lo Que Conduces
-// getDataFromInstadna('PorLoQueConduces', [getTableData(akmTable2), getTableData(akmTable3), getTableData(akmTable4), getTableData(akmTable5), getTableData(akmTable6), getTableData(akmTable7), getTableData(akmTable8), getTableData(akmTable9), getTableData(akmTable10)]);
+getDataFromInstadna('PorLoQueConduces', [getTableData(akmTable2), getTableData(akmTable3), getTableData(akmTable4), getTableData(akmTable5), getTableData(akmTable6), getTableData(akmTable7), getTableData(akmTable8), getTableData(akmTable9), getTableData(akmTable10)]);
 
 //Perdida Total
 // getDataFromInstadna('PerdidaTotal', [getTableData(aptTable2), getTableData(aptTable3), getTableData(aptTable4), getTableData(aptTable5), getTableData(aptTable6), getTableData(aptTable7), getTableData(aptTable8), getTableData(aptTable9)]);
@@ -2097,10 +2222,10 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 
 
 //Por Si Pierdes Tus Ingresos
-//getDataFromInstadna('PorSiPierdesTusIngresos', [getTableData(finTable2), getTableData(finTable3), getTableData(finTable4), getTableData(finTable5)]);
+// getDataFromInstadna('PorSiPierdesTusIngresos', [getTableData(finTable2), getTableData(finTable3), getTableData(finTable4), getTableData(finTable5)]);
 
 //Emergencias Del Hogar
-//getDataFromInstadna('EmergenciasDelHogar', [getTableData(fehTable2), getTableData(fehTable3), getTableData(fehTable4), getTableData(fehTable5), getTableData(fehTable6)]);
+// getDataFromInstadna('EmergenciasDelHogar', [getTableData(fehTable2), getTableData(fehTable3), getTableData(fehTable4), getTableData(fehTable5), getTableData(fehTable6)]);
 
 
 //Para Tu Bici
@@ -2111,14 +2236,14 @@ let fmaTable7 = 'dbint_251_1698_MigracionParaTuMejorAmigoParte7';
 
 
 //Por Si Te Accidentas
-//getDataFromInstadna('PorSiTeAccidentas', [getTableData(fapTable2), getTableData(fapTable3), getTableData(fapTable4), getTableData(fapTable5), getTableData(fapTable6)]);
+// getDataFromInstadna('PorSiTeAccidentas', [getTableData(fapTable2), getTableData(fapTable3), getTableData(fapTable4), getTableData(fapTable5), getTableData(fapTable6)]);
 
 //Por Si Te Accidentas Beneficiarios
 // getDataFromInstadna('PorSiTeAccidentasBeneficiarios', [getTableData(fapbTable, true)]);
 
 
 //Para Su Bienestar
-//getDataFromInstadna('ParaSuBienestar', [getTableData(fbdTable2), getTableData(fbdTable3), getTableData(fbdTable4), getTableData(fbdTable5), getTableData(fbdTable6)]);
+// getDataFromInstadna('ParaSuBienestar', [getTableData(fbdTable2), getTableData(fbdTable3), getTableData(fbdTable4), getTableData(fbdTable5), getTableData(fbdTable6)]);
 
 //Para Su Bienestar Desnivelado Beneficiarios
 // getDataFromInstadna('ParaSuBienestarDesniveladoBeneficiarios', [getTableData(fbdbTable, true)]);
